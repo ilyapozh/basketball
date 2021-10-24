@@ -35,6 +35,10 @@
   width: 60%;
 }
 
+.favorite-container {
+  width:60%;
+}
+
 .result-container__list {
   list-style: none;
   display: flex;
@@ -55,4 +59,8 @@
 .player-card:hover {
   opacity: 0.5;
   cursor: pointer;
+}
+
+.result-container__title {
+  text-align: center;
 }

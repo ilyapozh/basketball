@@ -8,9 +8,33 @@ function App() {
 
   const [inputValue, setInputValue] = React.useState('');
   const [resultArray, setResultArr] = React.useState([]);
+  const [favoritePlayers, setFavoritePlayers] = React.useState([]);
+
+  React.useEffect(() => {
+    getFavoritePlayers()
+  }, [])
+
+  const getFavoritePlayers = () => {
+    return fetch(`http://localhost:3005/players`, {
+              method: 'GET',
+          })
+          .then(res => {
+            if(res.ok) return res.json();
+            return Promise.reject(`Error: ${res.status}`)
+          })
+          .then(res => {
+            setFavoritePlayers(res.data)
+          })
+          .catch(err => console.log(err))
+  }
 
   const handleChangeInputValue = (event) => {
     setInputValue(event.target.value)
+  }
+
+  const handleOnPlayer = (playerData) => {
+    const {data} = playerData;
+    setFavoritePlayers([data, ...favoritePlayers]);
   }
   
   const handleSubmit = (event) => {
@@ -18,12 +42,10 @@ function App() {
     
     return fetch(`https://www.balldontlie.io/api/v1/players?per_page=10&search=${inputValue}`, {})
           .then(res => {
-            console.log(inputValue)
             if (res.ok) return res.json()
             return Promise.reject(`Error: ${res.status}`)
           })
           .then(res => {
-            console.log(res);
             setResultArr(res.data);
           })
   }
@@ -35,8 +57,8 @@ function App() {
         <button className="app__submit-button">Search</button>
       </form>
       <div className="app__container">
-        <ResultContainer players={resultArray}/>
-        <FavoritesContainer />
+        <ResultContainer players={resultArray} onPlayer={handleOnPlayer} />
+        <FavoritesContainer players={favoritePlayers}/>
       </div>
     </div>
   );
